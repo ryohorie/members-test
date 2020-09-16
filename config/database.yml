@@ -1,0 +1,25 @@
+default: &default
+  adapter: postgresql
+  encoding: utf8
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  username: <%= ENV.fetch("POSTGRES_USER", "postgres") %>
+  password: <%= ENV.fetch("POSTGRES_PASSWORD", "password") %>
+  host: <%= ENV.fetch("POSTGRES_HOST", "postgres") %>
+
+development:
+  <<: *default
+
+test:
+  <<: *default
+
+production:
+  <<: *default
+  adapter: postgresql
+  host: Rails.application.credentials.db[:host]
+  port: Rails.application.credentials.db[:port]
+  encoding: utf8
+  database: Rails.application.credentials.db[:database]
+  username: Rails.application.credentials.db[:user]
+  password: Rails.application.credentials.db[:password]
+  pool: 5
+  timeout: 5000

@@ -1,0 +1,41 @@
+version: "3"
+services:
+  postgres:
+    image: postgres
+    container_name: postgres
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data:cached
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_HOST=postgres
+    ports:
+      - "5432:5432"
+
+  web:
+    container_name: web
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    volumes:
+      - .:/app:cached
+      - ./bundle:/usr/local/bundle:cached
+      - /app/vendor
+      - /app/tmp
+      - /app/log
+      - /app/.git
+    ports:
+      - "3000:3000"
+    links:
+      - postgres
+    tty: true
+    stdin_open: true
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_HOST=postgres
+volumes:
+  bundle:
+    driver: local
+  pgdata:
+    driver: local
